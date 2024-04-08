@@ -589,12 +589,32 @@ static void traverse_inorder_impl(const Node *node, std::ostream &os) {
   // HINT: At each step, compare 'val' the the current node (using the
   //       'less' parameter). Based on the result, you gain some information
   //       about where the element you're looking for could be.
- static Node * min_greater_than_impl(Node *node, const T &val, Compare less) {
+static Node *min_greater_than_impl(Node *node, const T &val, Compare less) {
     if (node == nullptr) {
         // Base case: if the tree is empty or we reach a leaf node,
         // return nullptr since there are no elements greater than 'val'
         return nullptr;
     }
+
+    if (!less(node->datum, val)) { // Corrected 'data' to 'datum'
+        // If the current node's datum is not less than 'val',
+        // we need to explore the left subtree
+        Node *result = min_greater_than_impl(node->left, val, less);
+        // If the result is not null, it means a node containing a value greater than 'val' was found
+        if (result != nullptr) {
+            return result;
+        } else {
+            // If the left subtree doesn't contain a suitable node,
+            // the current node is the smallest one greater than 'val'
+            return node;
+        }
+    } else {
+        // If the current node's datum is less than 'val',
+        // we need to explore the right subtree
+        return min_greater_than_impl(node->right, val, less);
+    }
+
+
 
     // Compare the current node's datum with 'val' using the comparison functor
     if (!less(node->datum, val)) {
