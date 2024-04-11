@@ -315,8 +315,6 @@ private:
   //       anything with it. DO NOT CHANGE.
   int get_max_elt_width() const;
 
-
-
 // ---------- DO NOT CHANGE ANYTHING IN THIS FILE ABOVE THIS LINE ----------
 
 
@@ -333,7 +331,6 @@ private:
     return (node == nullptr);
 }
 
-
   // EFFECTS: Returns the size of the tree rooted at 'node', which is the
   //          total number of nodes in that tree. The size of an empty
   //          tree is 0.
@@ -344,7 +341,6 @@ static int size_impl(const Node *node) {
     }
     return 1 + size_impl(node->left) + size_impl(node->right);
 }
-
 
   // EFFECTS: Returns the height of the tree rooted at 'node', which is the
   //          number of nodes in the longest path from the 'node' to a leaf.
@@ -362,7 +358,6 @@ static int size_impl(const Node *node) {
         return 1 + std::max(left_height, right_height);
     }
 }
-
 
   // EFFECTS: Creates and returns a pointer to the root of a new node structure
   //          with the same elements and EXACTLY the same structure as the
@@ -396,7 +391,6 @@ static int size_impl(const Node *node) {
     }
 }
 
-
   // EFFECTS : Searches the tree rooted at 'node' for an element equivalent
   //           to 'query'. If one is found, returns a pointer to the node
   //           containing it. If the tree is empty or the element is not
@@ -425,7 +419,6 @@ static Node * find_impl(Node *node, const T &query, Compare less) {
     // Element equivalent to query not found
     return nullptr;
 }
-
 
   // REQUIRES: item is not already contained in the tree rooted at 'node'
   // MODIFIES: the tree rooted at 'node'
@@ -459,7 +452,6 @@ static Node * insert_impl(Node *node, const T &item, Compare less) {
     // Return the modified node
     return node;
 }
-
 
   // EFFECTS : Returns a pointer to the Node containing the minimum element
   //           in the tree rooted at 'node' or a null pointer if the tree is empty.
@@ -503,8 +495,6 @@ static Node * max_element_impl(Node *node) {
     return max_element_impl(node->right);
 }
 
-
-
   // EFFECTS: Returns whether the sorting invariant holds on the tree
   //          rooted at 'node'.
   // NOTE:    This function must be tree recursive.
@@ -513,22 +503,18 @@ static Node * max_element_impl(Node *node) {
         // An empty subtree trivially satisfies the sorting invariant
         return true;
     }
-
     // Check the sorting invariant for the left subtree
     if (node->left != nullptr && less(node->datum, node->left->datum)) {
         return false;
     }
-
     // Check the sorting invariant for the right subtree
     if (node->right != nullptr && less(node->right->datum, node->datum)) {
         return false;
     }
-
     // Recursively check the sorting invariant for the left and right subtrees
     return check_sorting_invariant_impl(node->left, less) &&
            check_sorting_invariant_impl(node->right, less);
 }
-
 
   // EFFECTS : Traverses the tree rooted at 'node' using an in-order traversal,
   //           printing each element to os in turn. Each element is followed
@@ -542,7 +528,6 @@ static void traverse_inorder_impl(const Node *node, std::ostream &os) {
         // Base case: if the node is null, return without printing anything
         return;
     }
-
     // Recursively traverse the left subtree
     traverse_inorder_impl(node->left, os);
 
@@ -552,7 +537,6 @@ static void traverse_inorder_impl(const Node *node, std::ostream &os) {
     // Recursively traverse the right subtree
     traverse_inorder_impl(node->right, os);
 }
-
 
   // EFFECTS : Traverses the tree rooted at 'node' using a pre-order traversal,
   //           printing each element to os in turn. Each element is followed
@@ -577,7 +561,6 @@ static void traverse_inorder_impl(const Node *node, std::ostream &os) {
     traverse_preorder_impl(node->right, os);
 }
 
-
   // EFFECTS : Returns a pointer to the Node containing the smallest element
   //           in the tree rooted at 'node' that is greater than 'val'.
   //           Returns a null pointer if the tree is empty or if it does not
@@ -589,6 +572,7 @@ static void traverse_inorder_impl(const Node *node, std::ostream &os) {
   // HINT: At each step, compare 'val' the the current node (using the
   //       'less' parameter). Based on the result, you gain some information
   //       about where the element you're looking for could be.
+
 static Node *min_greater_than_impl(Node *node, const T &val, Compare less) {
     if (node == nullptr) {
         // Base case: if the tree is empty or we reach a leaf node,
@@ -596,29 +580,8 @@ static Node *min_greater_than_impl(Node *node, const T &val, Compare less) {
         return nullptr;
     }
 
-    if (!less(node->datum, val)) { // Corrected 'data' to 'datum'
-        // If the current node's datum is not less than 'val',
-        // we need to explore the left subtree
-        Node *result = min_greater_than_impl(node->left, val, less);
-        // If the result is not null, it means a node containing a value greater than 'val' was found
-        if (result != nullptr) {
-            return result;
-        } else {
-            // If the left subtree doesn't contain a suitable node,
-            // the current node is the smallest one greater than 'val'
-            return node;
-        }
-    } else {
-        // If the current node's datum is less than 'val',
-        // we need to explore the right subtree
-        return min_greater_than_impl(node->right, val, less);
-    }
-
-
-
-    // Compare the current node's datum with 'val' using the comparison functor
-    if (!less(node->datum, val)) {
-        // If the current node's datum is not less than 'val',
+    if (less(val, node->datum)) {
+        // If the current node's datum is greater than 'val',
         // we might have found a candidate node that is greater than 'val'
         // Check the left subtree for a smaller candidate
         Node *left_candidate = min_greater_than_impl(node->left, val, less);
@@ -631,12 +594,11 @@ static Node *min_greater_than_impl(Node *node, const T &val, Compare less) {
         // itself could be the smallest element greater than 'val'
         return node;
     } else {
-        // If the current node's datum is less than 'val',
+        // If the current node's datum is not greater than 'val',
         // the candidate node must be in the right subtree
         return min_greater_than_impl(node->right, val, less);
     }
 }
-
 
 
 }; // END of BinarySearchTree class
